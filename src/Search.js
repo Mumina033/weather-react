@@ -1,22 +1,43 @@
-import React, { useState, useEffect } from "react";
-import "./index.css";
+import React, { useState } from "react";
+import "./App.css"; // Ensure this file exists and is correctly referenced
 import axios from "axios";
 
 export default function Search() {
-  const [city, setCity] = useState("New Orleans");
+  const [city, setCity] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState([]);
 
-  useEffect(() => {
-    fetchWeather("New Orleans");
-  }, []);
+  // Function to generate random forecast images
+  function generateRandomForecast() {
+    const icons = [
+      "01d",
+      "02d",
+      "03d",
+      "04d",
+      "09d",
+      "10d",
+      "11d",
+      "13d",
+      "50d",
+      "01n",
+      "02n",
+      "03n",
+      "04n",
+      "09n",
+      "10n",
+      "11n",
+      "13n",
+      "50n",
+    ];
 
-  function fetchWeather(city) {
-    let apiKey = "d1a86552de255334f6117b348c4519bd";
-    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-    axios.get(apiUrl).then(displayWeather).catch(handleError);
+    const randomIcons = icons.sort(() => 0.5 - Math.random()).slice(0, 5);
+    return randomIcons.map(
+      (icon) => `https://openweathermap.org/img/wn/${icon}@2x.png`
+    );
   }
 
+  // Function to handle the API response
   function displayWeather(response) {
     setLoaded(true);
     setWeather({
@@ -26,8 +47,10 @@ export default function Search() {
       icon: `https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
       description: response.data.weather[0].description,
     });
+    setForecast(generateRandomForecast());
   }
 
+  // Function to handle API errors
   function handleError(error) {
     console.error("Error fetching the weather data:", error);
     alert(
@@ -35,21 +58,20 @@ export default function Search() {
     );
   }
 
+  // Function to handle form submission
   function handleSubmit(event) {
     event.preventDefault();
     if (city.trim() === "") {
       alert("Please enter a city name.");
       return;
     }
-    fetchWeather(city);
+
+    const apiKey = "d1a86552de255334f6117b348c4519bd";
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+    axios.get(apiUrl).then(displayWeather).catch(handleError);
   }
 
-  function updateCity(event) {
-    let input = event.target.value;
-    let capitalizedInput = capitalizeCityName(input);
-    setCity(capitalizedInput);
-  }
-
+  // Function to capitalize the city name
   function capitalizeCityName(name) {
     return name
       .split(" ")
@@ -57,30 +79,14 @@ export default function Search() {
       .join(" ");
   }
 
-  function getRandomForecastImages() {
-    const imageUrls = [
-      "https://openweathermap.org/img/wn/01d@2x.png",
-      "https://openweathermap.org/img/wn/02d@2x.png",
-      "https://openweathermap.org/img/wn/03d@2x.png",
-      "https://openweathermap.org/img/wn/04d@2x.png",
-      "https://openweathermap.org/img/wn/09d@2x.png",
-      "https://openweathermap.org/img/wn/10d@2x.png",
-      "https://openweathermap.org/img/wn/11d@2x.png",
-      "https://openweathermap.org/img/wn/13d@2x.png",
-      "https://openweathermap.org/img/wn/50d@2x.png",
-    ];
-
-    for (let i = imageUrls.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [imageUrls[i], imageUrls[j]] = [imageUrls[j], imageUrls[i]];
-    }
-
-    return imageUrls.slice(0, 5);
+  // Function to update city state
+  function updateCity(event) {
+    const input = event.target.value;
+    setCity(capitalizeCityName(input));
   }
 
-  const forecastImages = getRandomForecastImages();
-
-  let form = (
+  // Form JSX
+  const form = (
     <form onSubmit={handleSubmit} className="mb-3">
       <div className="input-group">
         <input
@@ -96,15 +102,16 @@ export default function Search() {
     </form>
   );
 
-  let dailyForecast = weather ? (
+  // Daily forecast JSX
+  const dailyForecast = (
     <div className="container">
       <div className="row">
-        {forecastImages.map((image, index) => (
+        {["Mon", "Tues", "Wens", "Thurs", "Fri"].map((day, index) => (
           <div className="col-md" key={index}>
-            <div className="forecast-day">Day {index + 1}</div>
+            <div className="forecast-day">{day}</div>
             <div className="forecast-content">
               <div className="forecast-img">
-                <img src={image} alt={`Forecast ${index + 1}`} />
+                <img src={forecast[index]} alt={`Forecast for ${day}`} />
               </div>
               <div className="forecast-max-min">
                 <span className="forecast-max">34°</span>
@@ -141,31 +148,32 @@ export default function Search() {
         </a>
       </footer>
     </div>
-  ) : null;
+  );
 
-  return (
-    <div>
-      {form}
-      <div className="col-6">
-        <h2>{city}</h2>
-        {weather ? (
-          <>
-            Friday 3:57 AM, {weather.description}
-            <p className="weather-info">
-              Humidity: {weather.humidity}%, Wind: {weather.wind} mph
-            </p>
-          </>
-        ) : null}
-      </div>
-      <div className="col-8">
-        {weather ? (
+  // Main render
+  if (loaded) {
+    return (
+      <div>
+        {form}
+        <div className="col-6">
+          <h2>{city}</h2>
+          Friday 3:57 AM, {weather.description}
+          <p className="weather-info">
+            Humidity: <span className="highlight">{weather.humidity}%</span>,
+            Wind:{" "}
+            <span className="highlight">{Math.round(weather.wind)} mph</span>
+          </p>
+        </div>
+        <div className="col-8">
           <h1 className="initialtemp">
             <img src={weather.icon} alt={weather.description} />{" "}
             {Math.round(weather.temperature)}°C
           </h1>
-        ) : null}
+        </div>
+        {dailyForecast}
       </div>
-      {dailyForecast}
-    </div>
-  );
+    );
+  } else {
+    return <div>{form}</div>;
+  }
 }
