@@ -1,4 +1,11 @@
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 .App {
+  max-width: 930px;
+  margin: 0 auto;
+  padding: 85px;
   text-align: center;
 }
 
@@ -14,14 +21,14 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #282940;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border-radius: 20px;
   font-size: calc(10px + 2vmin);
-  color: white;
 }
 
 .App-link {
@@ -35,4 +42,94 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+form {
+  margin-top: 40px;
+  padding-bottom: 30px;
+}
+
+.form-control {
+  width: 25%;
+  flex: 0 0 auto;
+  border-radius: 6px;
+  margin-right: 10px;
+  padding: 15px 20px;
+}
+
+.btn-primary {
+  border-radius: 6px;
+}
+
+.initialtemp {
+  color: #ffffffaf;
+  font-size: 65px;
+  text-align: right;
+}
+
+.initialtemp img {
+  vertical-align: middle;
+  margin-left: 15px;
+}
+
+.forecast-day {
+  color: gray;
+}
+
+.forecast-img {
+  margin-bottom: 10px;
+}
+
+.forecast-img img {
+  max-width: 70px;
+}
+
+.forecast-max-min {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 13px;
+  font-size: 20px;
+}
+
+.forecast-max {
+  color: pink;
+}
+
+.forecast-min {
+  color: rgba(214, 178, 184, 0.788);
+}
+
+.footer-css {
+  color: white;
+  font-size: 15px;
+  margin: 70px 0;
+}
+
+a {
+  text-decoration: none;
+  transition: transform 0.2s ease-in-out;
+  color: rgb(13 110 253);
+}
+
+a:hover {
+  transform: scale(1.1);
+}
+
+h2 {
+  color: yellow !important;
+  font-size: 38px !important;
+  font-weight: 700;
+  text-align: left;
+  margin: 20px 0 10px;
+}
+
+.highlight {
+  color: pink;
+}
+
+.col-6 {
+  color: gray;
+  font-size: 20px;
+  text-align: left;
 }
