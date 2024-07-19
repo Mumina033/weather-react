@@ -57,6 +57,29 @@ export default function Search() {
       .join(" ");
   }
 
+  function getRandomForecastImages() {
+    const imageUrls = [
+      "https://openweathermap.org/img/wn/01d@2x.png",
+      "https://openweathermap.org/img/wn/02d@2x.png",
+      "https://openweathermap.org/img/wn/03d@2x.png",
+      "https://openweathermap.org/img/wn/04d@2x.png",
+      "https://openweathermap.org/img/wn/09d@2x.png",
+      "https://openweathermap.org/img/wn/10d@2x.png",
+      "https://openweathermap.org/img/wn/11d@2x.png",
+      "https://openweathermap.org/img/wn/13d@2x.png",
+      "https://openweathermap.org/img/wn/50d@2x.png",
+    ];
+
+    for (let i = imageUrls.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [imageUrls[i], imageUrls[j]] = [imageUrls[j], imageUrls[i]];
+    }
+
+    return imageUrls.slice(0, 5);
+  }
+
+  const forecastImages = getRandomForecastImages();
+
   let form = (
     <form onSubmit={handleSubmit} className="mb-3">
       <div className="input-group">
@@ -76,66 +99,20 @@ export default function Search() {
   let dailyForecast = weather ? (
     <div className="container">
       <div className="row">
-        <div className="col-md">
-          <div className="forecast-day">Mon</div>
-          <div className="forecast-content">
-            <div className="forecast-img">
-              <img src={weather.icon} alt={weather.description} />
-            </div>
-            <div className="forecast-max-min">
-              <span className="forecast-max">34°</span>
-              <span className="forecast-min">23°</span>
-            </div>
-          </div>
-        </div>
-        <div className="col-md">
-          <div className="forecast-day">Tues</div>
-          <div className="forecast-content">
-            <div className="forecast-img">
-              <img src={weather.icon} alt={weather.description} />
-            </div>
-            <div className="forecast-max-min">
-              <span className="forecast-max">34°</span>
-              <span className="forecast-min">23°</span>
+        {forecastImages.map((image, index) => (
+          <div className="col-md" key={index}>
+            <div className="forecast-day">Day {index + 1}</div>
+            <div className="forecast-content">
+              <div className="forecast-img">
+                <img src={image} alt={`Forecast ${index + 1}`} />
+              </div>
+              <div className="forecast-max-min">
+                <span className="forecast-max">34°</span>
+                <span className="forecast-min">23°</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="col-md">
-          <div className="forecast-day">Wens</div>
-          <div className="forecast-content">
-            <div className="forecast-img">
-              <img src={weather.icon} alt={weather.description} />
-            </div>
-            <div className="forecast-max-min">
-              <span className="forecast-max">34°</span>
-              <span className="forecast-min">23°</span>
-            </div>
-          </div>
-        </div>
-        <div className="col-md">
-          <div className="forecast-day">Thurs</div>
-          <div className="forecast-content">
-            <div className="forecast-img">
-              <img src={weather.icon} alt={weather.description} />
-            </div>
-            <div className="forecast-max-min">
-              <span className="forecast-max">34°</span>
-              <span className="forecast-min">23°</span>
-            </div>
-          </div>
-        </div>
-        <div className="col-md">
-          <div className="forecast-day">Fri</div>
-          <div className="forecast-content">
-            <div className="forecast-img">
-              <img src={weather.icon} alt={weather.description} />
-            </div>
-            <div className="forecast-max-min">
-              <span className="forecast-max">34°</span>
-              <span className="forecast-min">23°</span>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
       <footer className="footer-css">
         This project was coded by{" "}
