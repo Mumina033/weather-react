@@ -3,8 +3,8 @@ import React, { useState } from "react"; // Ensure React is imported correctly
 import "./App.css"; // Ensure this file exists and is correctly referenced
 import axios from "axios";
 
-export default function Search() {
-  const [city, setCity] = useState("");
+export default function Search(props) {
+  const [city, setCity] = useState(props.city);
   const [loaded, setLoaded] = useState(false);
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
@@ -42,6 +42,7 @@ export default function Search() {
   function displayWeather(response) {
     setLoaded(true);
     setWeather({
+      city: response.data.name,
       temperature: response.data.main.temp,
       wind: response.data.wind.speed,
       humidity: response.data.main.humidity,
@@ -66,7 +67,11 @@ export default function Search() {
       alert("Please enter a city name.");
       return;
     }
+    searchCity();
+  }
 
+  // Function to search for the city name
+  function searchCity() {
     const apiKey = "d1a86552de255334f6117b348c4519bd";
     const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
     axios.get(apiUrl).then(displayWeather).catch(handleError);
@@ -157,7 +162,7 @@ export default function Search() {
       <div>
         {form}
         <div className="col-6">
-          <h2>{city}</h2>
+          <h2>{weather.city}</h2>
           Friday 3:57 AM, {weather.description}
           <p className="weather-info">
             Humidity: <span className="highlight">{weather.humidity}%</span>,
@@ -175,6 +180,7 @@ export default function Search() {
       </div>
     );
   } else {
+    searchCity();
     return <div>{form}</div>;
   }
 }
